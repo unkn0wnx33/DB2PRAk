@@ -13,12 +13,11 @@ public class Connect {
     }
 
     public void setConnection(String database, String user, String password){
-        String format = String.format("jdbc:postgresql://feuerbach.nt.fh-koeln.de/", database);
-        Properties props = new Properties();
-        props.put("user", user);
-        props.put("password", password);
+        String server = "feuerbach";
+        String url = "jdbc:postgresql://"+server+".nt.fh-koeln.de/postgres?user="+user+"&password="+password;
+        Connection dbConnection=null;
         try {
-            this.conn = DriverManager.getConnection(format, props);
+            this.conn = DriverManager.getConnection(url);
             this.conn.setAutoCommit(true);
         } catch (SQLException e){
             System.out.println(e.getMessage());

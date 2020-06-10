@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/DB2Prak.iml" filepath="$PROJECT_DIR$/.idea/DB2Prak.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DB2Prak.iml" filepath="$PROJECT_DIR$/DB2Prak.iml" />
     </modules>
   </component>
 </project>

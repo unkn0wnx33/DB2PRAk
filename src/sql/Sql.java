@@ -140,20 +140,20 @@ public class Sql {
             select("select max(pnr) from person");
             if (results.next()) {
                 pnr = results.getInt(1);
+                System.out.println("Bitte gebe dem Mitarbeiter noch eine Anwesenheit(VorlesungsNr)[1-3], diese ist Pflicht: ");
+
+                while (!scanner.hasNextInt()) scanner.next();
+                vorlnr = scanner.nextInt();
+
+                this.preparedStatement = this.conn.prepareStatement(query);
+                preparedStatement.setInt(1, pnr);
+                preparedStatement.setInt(2, vorlnr);
+                preparedStatement.executeUpdate();
+                preparedStatement.close();
+
             } else {
-                System.out.println("Es Gab ein Problem mit der PNR, bitte die neuste PNR manuell eingeben: ");
-                pnr = Integer.parseInt(scanner.nextLine());
+                System.out.println("Es Gab ein Problem mit der PNR, bitte kontaktieren Sie den Support");
             }
-            System.out.println("Bitte gebe dem Mitarbeiter noch eine Anwesenheit(VorlesungsNr)[1-3], diese ist Pflicht: ");
-
-            while (!scanner.hasNextInt()) scanner.next();
-            vorlnr = scanner.nextInt();
-
-            this.preparedStatement = this.conn.prepareStatement(query);
-            preparedStatement.setInt(1, pnr);
-            preparedStatement.setInt(2, vorlnr);
-            preparedStatement.executeUpdate();
-            preparedStatement.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

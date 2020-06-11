@@ -37,6 +37,8 @@ public class Main {
                             "(name, gebdatum, semester, raum, rang) " +
                             "VALUES(?, ?, ?, ?, ?)";
 
+                    String insertAnwesenheit = "INSERT INTO anwesenheit (pnr, vorlnr) VALUES(?, ?)";
+
                     System.out.println("(1) einfache Person einfügen");
                     System.out.println("(2) einen Student einfügen");
                     System.out.println("(3) einen wissenschaftlichen Mitarbeiter einfügen");
@@ -53,9 +55,11 @@ public class Main {
                             break;
                         case 3:
                             sql.insertMitarbeiter(insertPerson);
+                            sql.insertErsteAnwesenheit(insertAnwesenheit);
                             break;
                         case 4:
                             sql.insertProf(insertPerson);
+                            sql.insertErsteAnwesenheit(insertAnwesenheit);
                             break;
                         default:
                             break;

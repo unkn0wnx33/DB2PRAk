@@ -253,4 +253,96 @@ public class Sql {
             System.out.println(e.getMessage());
         }
     }
+
+    public void getAvgNoten(){
+        try {
+            PreparedStatement prep = this.conn.prepareStatement("select * from get_avg_note()");
+            this.results = prep.executeQuery();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            ResultSetMetaData resultSetMetaData = results.getMetaData();
+            int columnsNumber = resultSetMetaData.getColumnCount();
+            while (results.next()) {
+                for (int i = 1; i <= columnsNumber; i++) {
+                    if (i > 1)
+                        System.out.print("  ,   ");
+                    String columnValue = results.getString(i);
+                    System.out.print(resultSetMetaData.getColumnName(i) + ": " + columnValue);
+                }
+                System.out.println("");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void intAll(String query){
+        try{
+            PreparedStatement s = this.conn.prepareStatement(query);
+            this.results = s.executeQuery();
+        }catch(SQLException throwables){
+            throwables.printStackTrace();
+        }
+
+        try {
+            ResultSetMetaData resultSetMetaData = results.getMetaData();
+            int columnsNumber = resultSetMetaData.getColumnCount();
+            while (results.next()) {
+                for (int i = 1; i <= columnsNumber; i++) {
+                    if (i > 1)
+                        System.out.print("  ,   ");
+                    String columnValue = results.getString(i);
+                    System.out.print(resultSetMetaData.getColumnName(i) + ": " + columnValue);
+                }
+                System.out.println("");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void int1(){
+        intAll("select student.gebdatum, get_avg_note.avg_Note from get_avg_note() " +
+                "inner join student on " +
+                "student.matnr = get_avg_note.matnr;");
+    }
+
+    public void int2(){
+        intAll("select professor.rang, count(*) as AnzahlVorlesungen from anwesenheit " +
+                "inner join professor on " +
+                "professor.personalnr = anwesenheit.pnr " +
+                "group by professor.rang;");
+    }
+
+    public void int3(){
+        intAll("select fakultät.name, count(*) as AnzahlStudenten from studium " +
+                "inner join fakultät " +
+                "on fakultät.faknr = studium.faknr" +
+                "group by fakultät.\"name\";");
+    }
+    public void int4(){
+        intAll("select vorlesung.titel, count(*) as teilnehmer from anwesenheit " +
+                "inner join vorlesung on " +
+                "vorlesung.vorlnr = anwesenheit.vorlnr " +
+                "where anwesenheit.pnr in (select matnr from student) " +
+                "group by vorlesung.titel;");
+    }
+    public void int5(){
+        intAll("select fakultät.\"name\", avg(person.semester) as avgVorlTeilnehmer from anwesenheit " +
+                "inner join studium on " +
+                "studium.pnr = anwesenheit.pnr " +
+                "inner join fakultät on " +
+                "fakultät.faknr = studium.faknr " +
+                "inner join person on " +
+                "person.pnr = studium.pnr " +
+                "anwesenheit.pnr in (select matnr from student) " +
+                "group by " +
+                "fakultät.\"name\" " +
+                "order by " +
+                "fakultät.\"name\";");
+    }
 }

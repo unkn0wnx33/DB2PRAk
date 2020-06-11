@@ -26,6 +26,8 @@ public class Main {
             System.out.println("(2) - select Person via Nr");
             System.out.println("(3) - Nach Vorlesung mit Titel(teil) suchen");
             System.out.println("(4) - Nach Fakultät mit Namen(teil) suchen");
+            System.out.println("(5) - UDF get_avg_note() ausführen!");
+            System.out.println("(6) - Interessante (komplexe) SQL Anfragen ausführen!");
             System.out.println("(0) - beenden");
 
             while (!scanner.hasNextInt()) scanner.next();
@@ -143,6 +145,39 @@ public class Main {
                             sql.getFakByName(search);
                     }
                     break;
+                case 5:
+                    sql.getAvgNoten();
+                    break;
+
+                case 6:
+                    System.out.println("(1) Durchschnittliche Note mit GebDatum aller Studenten");
+                    System.out.println("(2) Rang des Professors in relation mit Anzahl der gehalteten Vorlesungen");
+                    System.out.println("(3) Anzahl der Studenten in einer Fak");
+                    System.out.println("(4) Anzahl Studenten pro Vorlesung");
+                    System.out.println("(5) Durchschnittliche Anzahl der Semester aktiver Studenten pro Fak");
+
+                    System.out.println("(0) zurück");
+
+                    choice = Integer.parseInt(scanner.nextLine());
+                    switch (choice){
+                        case 1:
+                            sql.int1();
+                            break;
+                        case 2:
+                            sql.int2();
+                            break;
+                        case 3:
+                            sql.int3();
+                            break;
+                        case 4:
+                            sql.int4();
+                            break;
+                        case 5:
+                            sql.int5();
+                            break;
+                    }
+                    break;
+
 
                 case 0:
                     running = false;

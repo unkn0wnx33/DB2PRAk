@@ -319,7 +319,7 @@ public class Sql {
                 "fakultät.faknr = studium.faknr " +
                 "inner join person on " +
                 "person.pnr = studium.pnr " +
-                "anwesenheit.pnr in (select matnr from student) " +
+                "where anwesenheit.pnr in (select matnr from student) " +
                 "group by " +
                 "fakultät.name " +
                 "order by " +

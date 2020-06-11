@@ -205,11 +205,6 @@ public class Sql {
             preparedStatement.setString(1, search);
             this.results = preparedStatement.executeQuery();
 
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
-        try {
             ResultSetMetaData resultSetMetaData = results.getMetaData();
             int columnsNumber = resultSetMetaData.getColumnCount();
             while (results.next()) {
@@ -233,11 +228,6 @@ public class Sql {
             preparedStatement.setString(1, search);
             this.results = preparedStatement.executeQuery();
 
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
-        try {
             ResultSetMetaData resultSetMetaData = results.getMetaData();
             int columnsNumber = resultSetMetaData.getColumnCount();
             while (results.next()) {
@@ -256,14 +246,8 @@ public class Sql {
 
     public void getAvgNoten(){
         try {
-            preparedStatement = this.conn.prepareStatement("select * from get_avg_note()");
-            this.results = preparedStatement.executeQuery();
+            select("select * from get_avg_note()");
 
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
-        try {
             ResultSetMetaData resultSetMetaData = results.getMetaData();
             int columnsNumber = resultSetMetaData.getColumnCount();
             while (results.next()) {
@@ -296,7 +280,7 @@ public class Sql {
                 }
                 System.out.println("");
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }

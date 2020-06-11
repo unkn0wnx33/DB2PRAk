@@ -37,9 +37,47 @@ public class Sql {
         }
     }
 
+    public void printPersonen(String query) {
+        select(query);
+
+        try {
+            ResultSetMetaData resultSetMetaData = results.getMetaData();
+            int columnsNumber = resultSetMetaData.getColumnCount();
+            while (results.next()) {
+                for (int i = 1; i <= columnsNumber; i++) {
+                    if (i > 1)
+                        System.out.print("   |     ");
+                    String columnValue = results.getString(i);
+                    System.out.print(columnValue);
+                }
+                System.out.println("");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void getPersonById(String query, int pnr) {
+        select(query+pnr);
+        try {
+            ResultSetMetaData resultSetMetaData = results.getMetaData();
+            int columnsNumber = resultSetMetaData.getColumnCount();
+            while (results.next()) {
+                for (int i = 1; i <= columnsNumber; i++) {
+                    if (i > 1)
+                        System.out.print("  ,   ");
+                    String columnValue = results.getString(i);
+                    System.out.print(resultSetMetaData.getColumnName(i) + ": " + columnValue);
+                }
+                System.out.println("");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public void insertPerson(String query) {
         try {
-
             Person person = new Person();
             System.out.println("Bitte den Namen eingeben: ");
             person.setName(scanner.nextLine());
@@ -58,16 +96,16 @@ public class Sql {
             System.out.println(e.getMessage());
         }
     }
+
     public void insertStudent(String query) {
         try {
-
             Student student = new Student();
             System.out.println("Bitte den Namen eingeben: ");
             student.setName(scanner.nextLine());
             System.out.println("Bitte das Geburtsdatum eingeben (Format YYYY-MM-DD): ");
             student.setGebDatum(scanner.nextLine());
             System.out.println("Bitte Semester eingeben: ");
-            student.setSemester(scanner.nextInt());
+            student.setSemester(Integer.parseInt(scanner.nextLine()));
 
             this.preparedStatement = this.conn.prepareStatement(query);
             preparedStatement.setString(1, student.getName());
@@ -81,16 +119,16 @@ public class Sql {
             System.out.println(e.getMessage());
         }
     }
+
     public void insertMitarbeiter(String query) {
         try {
-
             Mitarbeiter mitarbeiter = new Mitarbeiter();
             System.out.println("Bitte den Namen eingeben: ");
             mitarbeiter.setName(scanner.nextLine());
             System.out.println("Bitte das Geburtsdatum eingeben (Format YYYY-MM-DD): ");
             mitarbeiter.setGebDatum(scanner.nextLine());
             System.out.println("Bitte Raum eingeben: ");
-            mitarbeiter.setRaum(scanner.nextInt());
+            mitarbeiter.setRaum(Integer.parseInt(scanner.nextLine()));
 
             this.preparedStatement = this.conn.prepareStatement(query);
             preparedStatement.setString(1, mitarbeiter.getName());
@@ -100,23 +138,25 @@ public class Sql {
             preparedStatement.setNull(5, Types.VARCHAR);
             preparedStatement.executeUpdate();
             preparedStatement.close();
+
+            insertErsteAnwesenheit(query);
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
+
     public void insertProf(String query) {
         try {
-
             Professor professor = new Professor();
             System.out.println("Bitte den Namen eingeben: ");
             professor.setName(scanner.nextLine());
             System.out.println("Bitte das Geburtsdatum eingeben (Format YYYY-MM-DD): ");
             professor.setGebDatum(scanner.nextLine());
             System.out.println("Bitte Raum eingeben: ");
-            professor.setRaum(scanner.nextInt());
+            professor.setRaum(Integer.parseInt(scanner.nextLine()));
             System.out.println("Bitte Rang eingeben (W2 oder W3): ");
             professor.setRang(scanner.nextLine());
-            System.out.println(professor.getRang());
 
             this.preparedStatement = this.conn.prepareStatement(query);
             preparedStatement.setString(1, professor.getName());
@@ -126,6 +166,33 @@ public class Sql {
             preparedStatement.setString(5, "W2");
             preparedStatement.executeUpdate();
             preparedStatement.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void insertErsteAnwesenheit(String query) {
+        int pnr;
+        int vorlnr;
+
+        try {
+            select("select max(pnr) from person");
+            if (results.next()) {
+                pnr = results.getInt(1);
+                System.out.println("Bitte gebe dem Mitarbeiter noch eine Anwesenheit(VorlesungsNr)[1-3], diese ist Pflicht: ");
+
+                while (!scanner.hasNextInt()) scanner.next();
+                vorlnr = scanner.nextInt();
+
+                this.preparedStatement = this.conn.prepareStatement(query);
+                preparedStatement.setInt(1, pnr);
+                preparedStatement.setInt(2, vorlnr);
+                preparedStatement.executeUpdate();
+                preparedStatement.close();
+
+            } else {
+                System.out.println("Es Gab ein Problem mit der PNR, bitte kontaktieren Sie den Support");
+            }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

@@ -23,7 +23,7 @@ public class Main {
         while (running) {
 
             System.out.println("\nBitte wählen:\n");
-            System.out.println("(1) - pipi kaka");
+            System.out.println("(1) - insert Person");
             System.out.println("(0) - beenden");
 
             while (!scanner.hasNextInt()) scanner.next();
@@ -31,7 +31,34 @@ public class Main {
             switch (choice) {
 
                 case 1:
-                    System.out.println("echt lol ey");
+
+                    String insertPerson = "INSERT INTO dbprak26.person " +
+                            "(name, gebdatum, semester, raum, rang)" +
+                            "VALUES(?, ?, ?, ?, ?);";
+
+                    System.out.println("(1) einfache Person einfügen");
+                    System.out.println("(2) einen Student einfügen");
+                    System.out.println("(3) einen wissenschaftlichen Mitarbeiter einfügen");
+                    System.out.println("(4) einen Professor anlegen");
+                    System.out.println("(0) zurück");
+
+                    choice = scanner.nextInt();
+                    switch (choice) {
+                        case 1:
+                            sql.insertPerson(insertPerson);
+                            break;
+                        case 2:
+                            sql.insertStudent(insertPerson);
+                            break;
+                        case 3:
+                            sql.insertMitarbeiter(insertPerson);
+                            break;
+                        case 4:
+                            sql.insertProf(insertPerson);
+                            break;
+                        default:
+                            break;
+                    }
                     break;
 
                 case 0:
@@ -43,11 +70,9 @@ public class Main {
                     break;
             }
 
-
-            //String query = <Some SQL statement>;
-            //sql.update(query);
-            //sql.select(<Some SQL statement>);
             c.closeConnection();
+
         }
     }
 }
+

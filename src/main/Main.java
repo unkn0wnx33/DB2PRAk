@@ -4,14 +4,13 @@ import connection.Connect;
 import sql.Sql;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         Connect c = new Connect();
-        c.setConnection("postgres", "dbprak26", "kranhaus26");
+        c.setConnection("dbprak26", "kranhaus26");
         Connection conn = c.getConnection();
         Sql sql = new Sql(conn);
 
@@ -25,7 +24,8 @@ public class Main {
             System.out.println("--- Bitte wählen ---");
             System.out.println("(1) - insert Person");
             System.out.println("(2) - select Person via Nr");
-            System.out.println("(3) - ");
+            System.out.println("(3) - Nach Vorlesung mit Titel(teil) suchen");
+            System.out.println("(4) - Nach Fakultät mit Namen(teil) suchen");
             System.out.println("(0) - beenden");
 
             while (!scanner.hasNextInt()) scanner.next();
@@ -116,6 +116,31 @@ public class Main {
                             sql.getPersonById("select * from mitarbeiter where personalnr = ", pnr4);
                             sql.getPersonById("select * from professor where personalnr = ", pnr4);
                             break;
+                    }
+                    break;
+
+                case 3:
+                    System.out.println("(1) Aus Vorlesungen nach Titel suchen:");
+                    System.out.println("(0) zurück");
+
+                    choice = Integer.parseInt(scanner.nextLine());
+                    switch (choice){
+                        case 1:
+                            System.out.println("Gib einen Titel oder Teil eines Titels ein: ");
+                            String search = scanner.nextLine();
+                            sql.getVorlesungByTitel(search);
+                    }
+                    break;
+                case 4:
+                    System.out.println("(1) Aus Fakulät mit Name oder Teil des Namens suchen:");
+                    System.out.println("(0) zurück");
+
+                    choice = Integer.parseInt(scanner.nextLine());
+                    switch (choice){
+                        case 1:
+                            System.out.println("Gib einen Namen oder Teil eines Namens ein: ");
+                            String search = scanner.nextLine();
+                            sql.getFakByName(search);
                     }
                     break;
 

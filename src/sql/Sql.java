@@ -197,4 +197,60 @@ public class Sql {
             System.out.println(e.getMessage());
         }
     }
+
+    public void getVorlesungByTitel(String search){
+        search = search +"%";
+        try {
+            PreparedStatement prep = this.conn.prepareStatement("select * from vorlesung where titel like ?");
+            prep.setString(1, search);
+            this.results = prep.executeQuery();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            ResultSetMetaData resultSetMetaData = results.getMetaData();
+            int columnsNumber = resultSetMetaData.getColumnCount();
+            while (results.next()) {
+                for (int i = 1; i <= columnsNumber; i++) {
+                    if (i > 1)
+                        System.out.print("  ,   ");
+                    String columnValue = results.getString(i);
+                    System.out.print(resultSetMetaData.getColumnName(i) + ": " + columnValue);
+                }
+                System.out.println("");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void getFakByName(String search){
+        search = search +"%";
+        try {
+            PreparedStatement prep = this.conn.prepareStatement("select * from fakultät where name like ?");
+            prep.setString(1, search);
+            this.results = prep.executeQuery();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            ResultSetMetaData resultSetMetaData = results.getMetaData();
+            int columnsNumber = resultSetMetaData.getColumnCount();
+            while (results.next()) {
+                for (int i = 1; i <= columnsNumber; i++) {
+                    if (i > 1)
+                        System.out.print("  ,   ");
+                    String columnValue = results.getString(i);
+                    System.out.print(resultSetMetaData.getColumnName(i) + ": " + columnValue);
+                }
+                System.out.println("");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

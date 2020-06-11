@@ -1,13 +1,13 @@
 package objects;
 
 public class Mitarbeiter extends Person {
-    private String raum;
+    private int raum;
 
-    public String getRaum() {
+    public int getRaum() {
         return raum;
     }
 
-    public void setRaum(String raum) {
+    public void setRaum(int raum) {
         this.raum = raum;
     }
 }

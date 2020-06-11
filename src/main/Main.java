@@ -32,9 +32,10 @@ public class Main {
 
                 case 1:
 
-                    String insertPerson = "INSERT INTO dbprak26.person " +
-                            "(name, gebdatum, semester, raum, rang)" +
-                            "VALUES(?, ?, ?, ?, ?);";
+
+                    String insertPerson = "INSERT INTO person " +
+                            "(name, gebdatum, semester, raum, rang) " +
+                            "VALUES(?, ?, ?, ?, ?)";
 
                     System.out.println("(1) einfache Person einfügen");
                     System.out.println("(2) einen Student einfügen");
@@ -63,15 +64,13 @@ public class Main {
 
                 case 0:
                     running = false;
+                    c.closeConnection();
                     break;
 
                 default:
                     System.out.println("!!! keine gültige Eingabe !!!");
                     break;
             }
-
-            c.closeConnection();
-
         }
     }
 }

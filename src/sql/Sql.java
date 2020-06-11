@@ -5,10 +5,7 @@ import objects.Person;
 import objects.Professor;
 import objects.Student;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Scanner;
 
 
@@ -52,10 +49,10 @@ public class Sql {
             this.preparedStatement = this.conn.prepareStatement(query);
             preparedStatement.setString(1, person.getName());
             preparedStatement.setString(2, person.getGebDatum());
-            preparedStatement.setString(3, null);
-            preparedStatement.setObject(4, null);
-            preparedStatement.setString(5, null);
-            preparedStatement.executeQuery();
+            preparedStatement.setNull(3, Types.INTEGER);
+            preparedStatement.setNull(4, Types.INTEGER);
+            preparedStatement.setNull(5, Types.VARCHAR);
+            preparedStatement.executeUpdate();
             preparedStatement.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -76,9 +73,9 @@ public class Sql {
             preparedStatement.setString(1, student.getName());
             preparedStatement.setString(2, student.getGebDatum());
             preparedStatement.setInt(3, student.getSemester());
-            preparedStatement.setObject(4, null);
-            preparedStatement.setString(5, null);
-            preparedStatement.executeQuery();
+            preparedStatement.setNull(4, Types.INTEGER);
+            preparedStatement.setNull(5, Types.VARCHAR);
+            preparedStatement.executeUpdate();
             preparedStatement.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -93,15 +90,15 @@ public class Sql {
             System.out.println("Bitte das Geburtsdatum eingeben (Format YYYY-MM-DD): ");
             mitarbeiter.setGebDatum(scanner.nextLine());
             System.out.println("Bitte Raum eingeben: ");
-            mitarbeiter.setRaum(scanner.nextLine());
+            mitarbeiter.setRaum(scanner.nextInt());
 
             this.preparedStatement = this.conn.prepareStatement(query);
             preparedStatement.setString(1, mitarbeiter.getName());
             preparedStatement.setString(2, mitarbeiter.getGebDatum());
-            preparedStatement.setString(3, null);
-            preparedStatement.setString(4, mitarbeiter.getRaum());
-            preparedStatement.setString(5, null);
-            preparedStatement.executeQuery(query);
+            preparedStatement.setNull(3, Types.INTEGER);
+            preparedStatement.setInt(4, mitarbeiter.getRaum());
+            preparedStatement.setNull(5, Types.VARCHAR);
+            preparedStatement.executeUpdate();
             preparedStatement.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -116,16 +113,18 @@ public class Sql {
             System.out.println("Bitte das Geburtsdatum eingeben (Format YYYY-MM-DD): ");
             professor.setGebDatum(scanner.nextLine());
             System.out.println("Bitte Raum eingeben: ");
-            professor.setRaum(scanner.nextLine());
+            professor.setRaum(scanner.nextInt());
             System.out.println("Bitte Rang eingeben (W2 oder W3): ");
+            professor.setRang(scanner.nextLine());
+            System.out.println(professor.getRang());
 
             this.preparedStatement = this.conn.prepareStatement(query);
             preparedStatement.setString(1, professor.getName());
             preparedStatement.setString(2, professor.getGebDatum());
-            preparedStatement.setString(3, null);
-            preparedStatement.setString(4, professor.getRaum());
-            preparedStatement.setString(5, professor.getRang());
-            preparedStatement.executeQuery(query);
+            preparedStatement.setNull(3, Types.INTEGER);
+            preparedStatement.setInt(4, professor.getRaum());
+            preparedStatement.setString(5, "W2");
+            preparedStatement.executeUpdate();
             preparedStatement.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

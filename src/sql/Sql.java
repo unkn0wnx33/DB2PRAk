@@ -201,9 +201,9 @@ public class Sql {
     public void getVorlesungByTitel(String search){
         search = search +"%";
         try {
-            PreparedStatement prep = this.conn.prepareStatement("select * from vorlesung where titel like ?");
-            prep.setString(1, search);
-            this.results = prep.executeQuery();
+            preparedStatement = this.conn.prepareStatement("select * from vorlesung where titel like ?");
+            preparedStatement.setString(1, search);
+            this.results = preparedStatement.executeQuery();
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -229,9 +229,9 @@ public class Sql {
     public void getFakByName(String search){
         search = search +"%";
         try {
-            PreparedStatement prep = this.conn.prepareStatement("select * from fakultät where name like ?");
-            prep.setString(1, search);
-            this.results = prep.executeQuery();
+            preparedStatement = this.conn.prepareStatement("select * from fakultät where name like ?");
+            preparedStatement.setString(1, search);
+            this.results = preparedStatement.executeQuery();
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -256,8 +256,8 @@ public class Sql {
 
     public void getAvgNoten(){
         try {
-            PreparedStatement prep = this.conn.prepareStatement("select * from get_avg_note()");
-            this.results = prep.executeQuery();
+            preparedStatement = this.conn.prepareStatement("select * from get_avg_note()");
+            this.results = preparedStatement.executeQuery();
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -281,12 +281,8 @@ public class Sql {
     }
 
     public void intAll(String query){
-        try{
-            PreparedStatement s = this.conn.prepareStatement(query);
-            this.results = s.executeQuery();
-        }catch(SQLException throwables){
-            throwables.printStackTrace();
-        }
+
+        select(query);
 
         try {
             ResultSetMetaData resultSetMetaData = results.getMetaData();
@@ -332,7 +328,7 @@ public class Sql {
                 "group by vorlesung.titel;");
     }
     public void int5(){
-        intAll("select fakultät.\"name\", avg(person.semester) as avgVorlTeilnehmer from anwesenheit " +
+        intAll("select fakultät.name, avg(person.semester) as avgVorlTeilnehmer from anwesenheit " +
                 "inner join studium on " +
                 "studium.pnr = anwesenheit.pnr " +
                 "inner join fakultät on " +
@@ -341,8 +337,8 @@ public class Sql {
                 "person.pnr = studium.pnr " +
                 "anwesenheit.pnr in (select matnr from student) " +
                 "group by " +
-                "fakultät.\"name\" " +
+                "fakultät.name " +
                 "order by " +
-                "fakultät.\"name\";");
+                "fakultät.name");
     }
 }

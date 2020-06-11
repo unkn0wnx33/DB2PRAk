@@ -155,7 +155,6 @@ public class Main {
                     System.out.println("(3) Anzahl der Studenten in einer Fak");
                     System.out.println("(4) Anzahl Studenten pro Vorlesung");
                     System.out.println("(5) Durchschnittliche Anzahl der Semester aktiver Studenten pro Fak");
-
                     System.out.println("(0) zurück");
 
                     choice = Integer.parseInt(scanner.nextLine());

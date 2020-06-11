@@ -119,6 +119,8 @@ public class Main {
                     }
                     break;
 
+                    //next case hier
+
                 case 0:
                     running = false;
                     c.closeConnection();

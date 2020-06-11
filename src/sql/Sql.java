@@ -37,6 +37,45 @@ public class Sql {
         }
     }
 
+    public void printPersonen(String query) {
+        select(query);
+
+        try {
+            ResultSetMetaData resultSetMetaData = results.getMetaData();
+            int columnsNumber = resultSetMetaData.getColumnCount();
+            while (results.next()) {
+                for (int i = 1; i <= columnsNumber; i++) {
+                    if (i > 1)
+                        System.out.print("   |     ");
+                    String columnValue = results.getString(i);
+                    System.out.print(columnValue);
+                }
+                System.out.println("");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void getPersonById(String query, int pnr) {
+        select(query+pnr);
+        try {
+            ResultSetMetaData resultSetMetaData = results.getMetaData();
+            int columnsNumber = resultSetMetaData.getColumnCount();
+            while (results.next()) {
+                for (int i = 1; i <= columnsNumber; i++) {
+                    if (i > 1)
+                        System.out.print("  ,   ");
+                    String columnValue = results.getString(i);
+                    System.out.print(resultSetMetaData.getColumnName(i) + ": " + columnValue);
+                }
+                System.out.println("");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public void insertPerson(String query) {
         try {
             Person person = new Person();
@@ -66,7 +105,7 @@ public class Sql {
             System.out.println("Bitte das Geburtsdatum eingeben (Format YYYY-MM-DD): ");
             student.setGebDatum(scanner.nextLine());
             System.out.println("Bitte Semester eingeben: ");
-            student.setSemester(scanner.nextInt());
+            student.setSemester(Integer.parseInt(scanner.nextLine()));
 
             this.preparedStatement = this.conn.prepareStatement(query);
             preparedStatement.setString(1, student.getName());

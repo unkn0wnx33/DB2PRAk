@@ -27,7 +27,7 @@ public class Person {
         return gebDatum;
     }
 
-    public void setGebDatum(String gebDatumdatum) {
+    public void setGebDatum(String gebDatum) {
         this.gebDatum = gebDatum;
     }
 }

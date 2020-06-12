@@ -1,0 +1,42 @@
+avg note mit gebdatum der studenten
+
+select student.gebdatum, get_avg_note.avg_Note from get_avg_note() 
+	inner join student on 
+	student.matnr = get_avg_note.matnr;
+
+rang des profs mit anzahl der gehaltenen vorlesungen
+
+select professor.rang, count(*) as AnzahlVorlesungen from anwesenheit 
+	inner join professor on 
+	professor.personalnr = anwesenheit.pnr 
+	group by professor.rang;
+
+anzahl der studenten in einer fak
+	
+select fakultät."name", count(*) as AnzahlStudenten from studium 
+	inner join fakultät 
+	on fakultät.faknr = studium.faknr
+	group by fakultät."name";
+	
+Anzahl von Studenten pro Vorlesung
+
+select vorlesung.titel, count(*) as teilnehmer from anwesenheit
+	inner join vorlesung on 
+	vorlesung.vorlnr = anwesenheit.vorlnr
+	where anwesenheit.pnr in (select matnr from student)
+	group by vorlesung.titel;
+	
+durchschnitliche anzahl der semester pro fak
+	
+select fakultät."name", avg(person.semester) as avgSemesterAnzahl from anwesenheit
+	inner join studium on 
+	studium.pnr = anwesenheit.pnr
+	inner join fakultät on
+	fakultät.faknr = studium.faknr
+	inner join person on 
+	person.pnr = studium.pnr 
+	where anwesenheit.pnr in (select matnr from student)
+	group by 
+	fakultät."name"
+	order by
+	fakultät."name";

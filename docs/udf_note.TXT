@@ -1,0 +1,18 @@
+--UDF note
+CREATE OR REPLACE FUNCTION get_avg_note () 
+	RETURNS TABLE (
+		matnr integer,
+		name varchar,
+		avg_note numeric
+)
+language plpgsql
+AS $body$
+BEGIN
+		return query select student.matnr, student.name, avg(note) as note from prüfungsbesuch p2 
+		inner join student on student.matnr = p2.pnr 
+		GROUP BY
+		student.name, 
+		student.matnr
+		ORDER BY
+		note ASC;
+END; $body$;

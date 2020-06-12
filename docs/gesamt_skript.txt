@@ -1,0 +1,295 @@
+drop view vorlesungsbesuch;
+drop view lesungen cascade;
+drop table prüfungsbesuch cascade;
+drop table arbeitsplatz cascade;
+drop table anwesenheit cascade;
+drop table studium cascade;
+truncate table person restart identity;
+truncate table prüfung restart identity;
+truncate table fakultät restart identity;
+truncate table vorlesung restart identity;
+
+
+CREATE TABLE vorlesung (
+	vorlnr serial NOT NULL,
+	raum varchar NULL,
+	titel varchar NULL,
+	tag varchar NULL,
+	uhrzeit varchar NULL,
+	CONSTRAINT vorlesung_pk PRIMARY KEY (vorlnr)
+);
+
+
+CREATE TABLE fakultät (
+	faknr int4 NOT NULL,
+	name varchar NULL,
+	CONSTRAINT fakultät_pk PRIMARY KEY (faknr)
+);
+
+
+CREATE TABLE person (
+	name varchar NOT NULL,
+	pnr serial NOT NULL,
+	gebdatum varchar NOT NULL,
+	semester int4 NULL,
+	raum int4 NULL,
+	rang varchar NULL check(rang = 'W3' or rang = 'W2'),
+	CONSTRAINT person_pk PRIMARY KEY (pnr)
+);
+
+
+CREATE TABLE prüfung (
+	prnr serial NOT NULL,
+	datum date,
+	ects int,
+	CONSTRAINT prüfung_pk PRIMARY KEY (prnr)
+);
+
+
+
+CREATE TABLE prüfungsbesuch (
+	note int4 NULL,
+	vorlnr int4 NOT NULL,
+	pnr int4 NOT NULL,
+	prnr int4 NOT NULL
+);
+
+
+CREATE TABLE studium (
+	studiengang varchar NULL,
+	pnr int4 NOT NULL,
+	faknr int4 NOT NULL
+);
+
+
+
+CREATE TABLE arbeitsplatz (
+	pnr int4 NOT NULL,
+	faknr int4 NOT NULL
+);
+
+CREATE TABLE anwesenheit (
+	pnr int4 NOT NULL,
+	vorlnr int4 NOT NULL
+);
+
+
+CREATE OR REPLACE VIEW angestellter
+AS SELECT person.pnr AS personalnr,
+    person.name,
+    person.gebdatum
+   FROM person
+  WHERE person.semester IS NULL;
+
+
+
+CREATE OR REPLACE VIEW mitarbeiter
+AS SELECT person.pnr AS personalnr,
+    person.name,
+    person.gebdatum,
+    person.raum
+   FROM person
+  WHERE person.semester IS NULL AND person.raum IS NOT NULL and person.rang IS NULL;
+
+CREATE OR REPLACE VIEW professor
+AS SELECT person.pnr AS personalnr,
+    person.name,
+    person.gebdatum,
+    person.raum,
+    person.rang
+   FROM person
+  WHERE person.semester IS NULL AND person.rang IS NOT NULL;
+
+CREATE OR REPLACE VIEW student
+AS SELECT person.pnr AS matnr,
+    person.name,
+    person.gebdatum,
+    person.semester
+   FROM person
+  WHERE person.semester IS NOT NULL;
+
+CREATE OR REPLACE VIEW vorlesungsbesuch
+AS SELECT anwesenheit.pnr AS matnr,
+    anwesenheit.vorlnr
+   FROM anwesenheit
+  WHERE anwesenheit.pnr IN (( SELECT person.pnr
+           FROM person
+          WHERE person.semester IS NOT NULL));
+
+CREATE OR REPLACE VIEW lesungen
+AS SELECT anwesenheit.pnr AS personalnr,
+    anwesenheit.vorlnr
+   FROM anwesenheit
+  WHERE (anwesenheit.pnr IN ( SELECT person.pnr
+           FROM person
+          WHERE person.semester IS NULL AND person.rang IS NOT NULL)) and anwesenheit.vorlnr != 0;
+
+
+ALTER TABLE anwesenheit ADD CONSTRAINT vorlesungsbesuch_fk FOREIGN KEY (pnr) REFERENCES person(pnr);
+
+ALTER TABLE anwesenheit ADD CONSTRAINT vorlesungsbesuch_fk_1 FOREIGN KEY (vorlnr) REFERENCES vorlesung(vorlnr);
+
+ALTER TABLE arbeitsplatz ADD CONSTRAINT arbeitsplatz_fk FOREIGN KEY (pnr) REFERENCES person(pnr) on delete SET NULL;
+
+ALTER TABLE arbeitsplatz ADD CONSTRAINT arbeitsplatz_fk1 FOREIGN KEY (faknr) REFERENCES fakultät(faknr);
+
+ALTER TABLE prüfungsbesuch ADD CONSTRAINT prüfungsbesuch_fk FOREIGN KEY (prnr) REFERENCES prüfung(prnr);
+
+ALTER TABLE prüfungsbesuch ADD CONSTRAINT prüfungsbesuch_fk_1 FOREIGN KEY (vorlnr) REFERENCES vorlesung(vorlnr);
+
+ALTER TABLE prüfungsbesuch ADD CONSTRAINT prüfungsbesuch_fk_2 FOREIGN KEY (pnr) REFERENCES person(pnr);
+
+ALTER TABLE studium ADD CONSTRAINT studium_fk FOREIGN KEY (pnr) REFERENCES person(pnr) on delete cascade;
+
+ALTER TABLE studium ADD CONSTRAINT studium_fk1 FOREIGN KEY (faknr) REFERENCES fakultät(faknr);
+
+
+
+--UDF note
+CREATE OR REPLACE FUNCTION get_avg_note () 
+	RETURNS TABLE (
+		matnr integer,
+		name varchar,
+		avg_note numeric
+)
+language plpgsql
+AS $body$
+BEGIN
+		return query select student.matnr, student.name, avg(note) as note from prüfungsbesuch p2 
+		inner join student on student.matnr = p2.pnr 
+		GROUP BY
+		student.name, 
+		student.matnr
+		ORDER BY
+		note ASC;
+END; $body$;
+
+--pnr = 1
+INSERT INTO person
+("name", gebdatum, semester, raum, rang)
+VALUES('Jurek, Jesse', '1998-11-23', 4, null, null);
+
+--pnr = 2
+INSERT INTO person
+("name", gebdatum, semester, raum, rang)
+VALUES('Klaus, Stein', '1966-02-12', null, 11, 'W3');
+
+--pnr = 3
+INSERT INTO person
+("name", gebdatum, semester, raum, rang)
+VALUES('Peter, Mueller', '1961-12-02', null, 10, 'W2');
+
+--pnr = 4
+INSERT INTO person
+("name", gebdatum, semester, raum, rang)
+VALUES('Phil, Gaimon', '1993-01-01', 1, null, null);
+
+--pnr = 5
+INSERT INTO person
+("name", gebdatum, semester, raum, rang)
+VALUES('James, Jesse', '1997-10-12', 2, null, null);
+
+--pnr = 6
+INSERT INTO person
+("name", gebdatum, semester, raum, rang)
+VALUES('Hans, Nissen', '1966-12-02', null, 13, 'W3');
+
+
+INSERT INTO fakultät
+(faknr, name)
+VALUES(7,'Informationstechnik');
+
+INSERT INTO fakultät
+(faknr, name)
+VALUES(6, 'Bauingenieurswesen');
+
+INSERT INTO prüfung
+(datum, ects)
+VALUES('2020-09-03', 5);
+
+INSERT INTO prüfung
+(datum, ects)
+VALUES('2020-09-11', 5);
+
+INSERT INTO prüfung
+(datum, ects)
+VALUES('2020-09-13', 10);
+
+--vorlnr = 1
+INSERT INTO vorlesung
+(raum, titel, tag, uhrzeit)
+VALUES('ZW6-10', 'Datenbanken1', 'Freitag', '8:00');
+
+--vorlnr = 2
+INSERT INTO vorlesung
+(raum, titel, tag, uhrzeit)
+VALUES('ZW7-10', 'Datenbanken2', 'Dienstag', '11:30');
+
+--vorlnr = 3
+INSERT INTO vorlesung
+(raum, titel, tag, uhrzeit)
+VALUES('ZW7-6', 'Signalverarbeitung', 'Montag', '14:00');
+
+
+
+--pnr aus personentabelle und vorlnr aus Vorlesungstabelle
+-- Wenn pnr ein Prof ist, wir die "anwesenheit des profs" in der tabelle lesung dargestellt
+-- Wenn pnr ein student ist, wir die "anwesenheit des studenten" in der tabelle vorlesungsbesuch dargestellt
+INSERT INTO anwesenheit
+(pnr, vorlnr)
+VALUES(1, 1);
+
+INSERT INTO anwesenheit
+(pnr, vorlnr)
+VALUES(1, 2);
+
+INSERT INTO anwesenheit
+(pnr, vorlnr)
+VALUES(1, 3);
+
+INSERT INTO anwesenheit
+(pnr, vorlnr)
+VALUES(4, 3);
+
+
+INSERT INTO anwesenheit
+(pnr, vorlnr)
+VALUES(2, 1);
+
+INSERT INTO anwesenheit
+(pnr, vorlnr)
+VALUES(2, 2);
+
+
+INSERT INTO anwesenheit
+(pnr, vorlnr)
+VALUES(6,3);
+
+-- besuchte Prüfung von Student, mit vorlnr, Prüfungsnummer und note
+INSERT INTO prüfungsbesuch
+(note, vorlnr, pnr, prnr)
+VALUES(2, 1, 1, 1);
+
+
+INSERT INTO prüfungsbesuch
+(note, vorlnr, pnr, prnr)
+VALUES(1, 2, 1, 2);
+
+
+INSERT INTO prüfungsbesuch
+(note, vorlnr, pnr, prnr)
+VALUES(5, 3, 4, 3);
+
+INSERT INTO studium
+(studiengang, pnr, faknr)
+VALUES('Informatik', 1, 7);
+
+INSERT INTO studium
+(studiengang, pnr, faknr)
+VALUES('Informatik', 4, 7);
+
+INSERT INTO studium
+(studiengang, pnr, faknr)
+VALUES('Bau-Ingenieur', 5, 6);
+
+

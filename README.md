@@ -8,3 +8,5 @@
     Ausführung der Anwendung möglich als Intellij Project (Intellij, file->open->Db2Prak)
     oder über die Commandozeile.
     
+    Das Skript um das Datenbankschema auf einem eigenen oder remote Server aufzubauen ist wie alle anderen wichtigen Dokumente unter           /docs/gesamt_skript.txt aufgelistet.
+    

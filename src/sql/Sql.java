@@ -301,7 +301,7 @@ public class Sql {
     public void int3(){
         intAll("select fakultät.name, count(*) as AnzahlStudenten from studium " +
                 "inner join fakultät " +
-                "on fakultät.faknr = studium.faknr" +
+                "on fakultät.faknr = studium.faknr " +
                 "group by fakultät.\"name\";");
     }
     public void int4(){
@@ -312,7 +312,7 @@ public class Sql {
                 "group by vorlesung.titel;");
     }
     public void int5(){
-        intAll("select fakultät.name, avg(person.semester) as avgVorlTeilnehmer from anwesenheit " +
+        intAll("select fakultät.name, avg(person.semester) as avgAnzahlSemester from anwesenheit " +
                 "inner join studium on " +
                 "studium.pnr = anwesenheit.pnr " +
                 "inner join fakultät on " +

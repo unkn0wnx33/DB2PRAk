@@ -10,7 +10,7 @@ public class Main {
 
     public static void main(String[] args) {
         Connect c = new Connect();
-        c.setConnection("dbprak26", "kranhaus26");
+        c.setConnection();
         Connection conn = c.getConnection();
         Sql sql = new Sql(conn);
 

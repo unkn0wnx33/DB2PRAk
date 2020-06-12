@@ -92,6 +92,7 @@ public class Sql {
             preparedStatement.setNull(5, Types.VARCHAR);
             preparedStatement.executeUpdate();
             preparedStatement.close();
+            System.out.println("Person erfolreich eingefügt.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -138,9 +139,7 @@ public class Sql {
             preparedStatement.setNull(5, Types.VARCHAR);
             preparedStatement.executeUpdate();
             preparedStatement.close();
-
-            insertErsteAnwesenheit(query);
-
+            System.out.println("Mitarbeiter erfolreich eingefügt.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -194,6 +193,7 @@ public class Sql {
             } else {
                 System.out.println("Es Gab ein Problem mit der PNR, bitte kontaktieren Sie den Support");
             }
+            System.out.println("Professor/in erfolreich eingefügt.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -337,8 +337,8 @@ public class Sql {
             if (results.next()) {
                 pnr = results.getInt(1);
                 System.out.println("[PFLICHT] Bitte dem Studierenden einen Studiengang und Fakultät zuweisen!");
-                printSelect("select * from fakultät");
-
+                printSelect("select * from fakultät order by faknr");
+                System.out.println("Fakultät über FakNr wählen: ");
                 while (!scanner.hasNextInt()) scanner.next();
                 fak = Integer.parseInt(scanner.nextLine());
                 System.out.println("Studiengang frei wählbar: ");
@@ -355,6 +355,7 @@ public class Sql {
             } else {
                 System.out.println("Es Gab ein Problem mit der PNR, bitte kontaktieren Sie den Support");
             }
+            System.out.println("Student erfolreich eingefügt.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

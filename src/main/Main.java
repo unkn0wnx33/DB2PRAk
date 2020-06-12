@@ -41,6 +41,9 @@ public class Main {
                     String insertAnwesenheit = "INSERT INTO anwesenheit " +
                             "(pnr, vorlnr) " +
                             "VALUES(?, ?)";
+                    String insertStudium = "INSERT INTO studium " +
+                            "(studiengang, pnr, faknr) " +
+                            "VALUES(?, ?, ?)";
 
                     System.out.println("(1) einfache Person einfügen");
                     System.out.println("(2) einen Student einfügen");
@@ -55,10 +58,11 @@ public class Main {
                             break;
                         case 2:
                             sql.insertStudent(insertPerson);
+                            sql.insertStudium(insertStudium);
                             break;
                         case 3:
                             sql.insertMitarbeiter(insertPerson);
-                            sql.insertErsteAnwesenheit(insertAnwesenheit);
+                            //sql.insertErsteAnwesenheit(insertAnwesenheit);
                             break;
                         case 4:
                             sql.insertProf(insertPerson);
@@ -82,7 +86,7 @@ public class Main {
                     switch (choice) {
                         case 1:
                             System.out.println("MatrikelNr , Name");
-                            sql.printPersonen("select student.matnr, student.name from student");
+                            sql.printSelect("select student.matnr, student.name from student");
                             System.out.println("Wählen Sie einen Studenten per MatrikelNr: ");
                             int matnr = Integer.parseInt(scanner.nextLine());
                             sql.getPersonById("select * from student where matnr = ", matnr);
@@ -90,28 +94,28 @@ public class Main {
 
                         case 2:
                             System.out.println("PersonalNr , Name");
-                            sql.printPersonen("select mitarbeiter.personalnr, mitarbeiter.name from mitarbeiter");
+                            sql.printSelect("select mitarbeiter.personalnr, mitarbeiter.name from mitarbeiter");
                             System.out.println("Wählen Sie einen Mitarbeiter per PersonalNr: ");
                             int pnr = Integer.parseInt(scanner.nextLine());
                             sql.getPersonById("select * from mitarbeiter where personalnr = ", pnr);
                             break;
                         case 3:
                             System.out.println("PersonalNr , Name");
-                            sql.printPersonen("select professor.personalnr, professor.name from professor");
+                            sql.printSelect("select professor.personalnr, professor.name from professor");
                             System.out.println("Wählen Sie einen Professor per PersonalNr: ");
                             int pnr2 = Integer.parseInt(scanner.nextLine());
                             sql.getPersonById("select * from professor where personalnr = ", pnr2);
                             break;
                         case 4:
                             System.out.println("PersonalNr , Name");
-                            sql.printPersonen("select angestellter.personalnr, angestellter.name from angestellter");
+                            sql.printSelect("select angestellter.personalnr, angestellter.name from angestellter");
                             System.out.println("Wählen Sie einen Angestellten per PersonalNr: ");
                             int pnr3 = Integer.parseInt(scanner.nextLine());
                             sql.getPersonById("select * from angestellter where personalnr = ", pnr3);
                             break;
                         case 5:
                             System.out.println("pnr , Name");
-                            sql.printPersonen("select person.pnr, person.name from person");
+                            sql.printSelect("select person.pnr, person.name from person");
                             System.out.println("Wählen Sie eine Person per pnr: ");
                             int pnr4 = Integer.parseInt(scanner.nextLine());
                             sql.getPersonById("select * from student where matnr = ", pnr4);

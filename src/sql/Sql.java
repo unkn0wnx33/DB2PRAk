@@ -37,7 +37,7 @@ public class Sql {
         }
     }
 
-    public void printPersonen(String query) {
+    public void printSelect(String query) {
         select(query);
 
         try {
@@ -179,7 +179,8 @@ public class Sql {
             select("select max(pnr) from person");
             if (results.next()) {
                 pnr = results.getInt(1);
-                System.out.println("Bitte gebe dem Mitarbeiter noch eine Anwesenheit(VorlesungsNr)[1-3], diese ist Pflicht: ");
+                System.out.println("Bitte gebe dem Prof noch eine Anwesenheit(VorlesungsNr)[1-3], diese ist " +
+                        "Pflicht: ");
 
                 while (!scanner.hasNextInt()) scanner.next();
                 vorlnr = scanner.nextInt();
@@ -324,5 +325,38 @@ public class Sql {
                 "fakultät.name " +
                 "order by " +
                 "fakultät.name");
+    }
+
+    public void insertStudium(String query){
+        int pnr;
+        int fak;
+        String sgang;
+
+        try {
+            select("select max(pnr) from person");
+            if (results.next()) {
+                pnr = results.getInt(1);
+                System.out.println("[PFLICHT] Bitte dem Studierenden einen Studiengang und Fakultät zuweisen!");
+                printSelect("select * from fakultät");
+
+                while (!scanner.hasNextInt()) scanner.next();
+                fak = Integer.parseInt(scanner.nextLine());
+                System.out.println("Studiengang frei wählbar: ");
+                sgang = scanner.nextLine();
+
+                //sgang, pnr, fak
+                this.preparedStatement = this.conn.prepareStatement(query);
+                preparedStatement.setString(1, sgang);
+                preparedStatement.setInt(2, pnr);
+                preparedStatement.setInt(3, fak);
+                preparedStatement.executeUpdate();
+                preparedStatement.close();
+
+            } else {
+                System.out.println("Es Gab ein Problem mit der PNR, bitte kontaktieren Sie den Support");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
